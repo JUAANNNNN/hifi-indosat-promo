@@ -87,6 +87,7 @@ const Navbar = () => {
 // --- KOMPONEN HERO SECTION DENGAN CAROUSEL BACKGROUND ---
 const HeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [address, setAddress] = useState(""); // State baru untuk menyimpan input alamat
 
   // Daftar gambar carousel
   const slides = [
@@ -101,6 +102,21 @@ const HeroSection = () => {
     }, 5000); // Ganti gambar setiap 5 detik
     return () => clearInterval(timer);
   }, [slides.length]);
+
+  // Fungsi Logika untuk Menangani Klik Cek Jangkauan
+  const handleCheckCoverage = () => {
+    // Validasi: Jika input kosong, berikan peringatan
+    if (!address.trim()) {
+      alert("Mohon masukkan alamat lengkap atau kode pos Anda terlebih dahulu.");
+      return;
+    } // Membentuk pesan WhatsApp dinamis
+    const waNumber = "628161147484";
+    const waMessage = encodeURIComponent(`Halo admin, tolong bantu cek apakah lokasi ini masuk jangkauan Indosat HiFi:\n\n📍 *${address}*`);
+    const waLink = `https://wa.me/${waNumber}?text=${waMessage}`;
+    
+    // Membuka tab baru menuju WhatsApp
+    window.open(waLink, "_blank");
+  };
 
   return (
     <section className="relative h-[600px] md:h-[700px] w-full overflow-hidden flex items-center justify-center">
@@ -137,10 +153,16 @@ const HeroSection = () => {
         <div className="bg-white p-2 rounded-2xl md:rounded-full shadow-2xl flex flex-col md:flex-row max-w-xl mx-auto border border-white/20">
           <input 
             type="text" 
-            placeholder="Masukkan alamat atau kode pos..." 
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleCheckCoverage()}
+            placeholder="Contoh: Jl. Soekarno Hatta, Malang..." 
             className="flex-1 px-6 py-4 rounded-full outline-none text-gray-800 placeholder:text-gray-400"
           />
-          <button className="bg-[#d60055] text-white font-bold px-8 py-4 rounded-xl md:rounded-full hover:bg-[#a70020] transition-all transform hover:scale-105 mt-2 md:mt-0">
+          <button 
+            onClick={handleCheckCoverage}
+            className="bg-[#d60055] text-white font-bold px-8 py-4 rounded-xl md:rounded-full hover:bg-[#a70020] transition-all transform hover:scale-105 mt-2 md:mt-0"
+          >
             Cek Jangkauan
           </button>
         </div>
